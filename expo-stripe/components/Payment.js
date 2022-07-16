@@ -9,7 +9,7 @@ const Payment = () => {
   const subscribe = async () => {
     try {
       // sending request
-      const response = await fetch("http://172.17.2.231:8080/pay", {
+      const response = await fetch("http://192.168.2.139:8080/pay", {
         method: "POST",
         body: JSON.stringify({ name }),
         headers: {
@@ -17,16 +17,22 @@ const Payment = () => {
         },
       });
       const data = await response.json();
+
       if (!response.ok) return Alert.alert(data.message);
+
       const clientSecret = data.clientSecret;
+
       const initSheet = await stripe.initPaymentSheet({
         paymentIntentClientSecret: clientSecret,
         merchantDisplayName: 'Merchant Name',
       });
+
       if (initSheet.error) return Alert.alert(initSheet.error.message);
+
       const presentSheet = await stripe.presentPaymentSheet({
         clientSecret,
       });
+      
       if (presentSheet.error) return console.log(presentSheet.error.message);
       Alert.alert("Payment complete, thank you!");
     } catch (err) {
